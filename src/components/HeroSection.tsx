@@ -48,6 +48,10 @@ export const HeroSection = ({ onGateSubmit, gateData, onOpenRegistration }: Hero
   }, []);
 
   const handlePlayClick = () => {
+    if (!unlocked) {
+      setShowModal(true);
+      return;
+    }
     setVideoPlaying(true);
     if (playerRef.current?.playVideo) {
       playerRef.current.playVideo();
@@ -77,6 +81,16 @@ export const HeroSection = ({ onGateSubmit, gateData, onOpenRegistration }: Hero
     onGateSubmit({ imie, email, telefon });
     setShowModal(false);
     setSubmitting(false);
+    setVideoPlaying(true);
+    setTimeout(() => {
+      if (playerRef.current?.playVideo) {
+        playerRef.current.playVideo();
+      } else {
+        iframeRef.current?.contentWindow?.postMessage(
+          JSON.stringify({ event: "command", func: "playVideo", args: [] }), "*"
+        );
+      }
+    }, 300);
   };
 
   return (

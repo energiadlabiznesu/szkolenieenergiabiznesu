@@ -11,7 +11,7 @@ import { InfiniteGridBg } from "@/components/ui/the-infinite-grid";
 
 const Index = () => {
   const { theme, toggle } = useTheme();
-  const [gateData, setGateData] = useState<{ imie: string; email: string; telefon: string } | null>({ imie: "", email: "", telefon: "" });
+  const [gateData, setGateData] = useState<{ imie: string; email: string; telefon: string } | null>(null);
   const [showRegistration, setShowRegistration] = useState(false);
 
   const handleGateSubmit = (data: { imie: string; email: string; telefon: string }) => {
