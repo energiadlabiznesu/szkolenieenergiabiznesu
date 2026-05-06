@@ -26,6 +26,7 @@ export const RegistrationForm = ({ prefill, isOpen, onClose }: Props) => {
   const [nazwaFirmy, setNazwaFirmy] = useState("");
   const [wojewodztwo, setWojewodztwo] = useState("");
   const [powiat, setPowiat] = useState("");
+  const [kiedy, setKiedy] = useState<"szybko" | "3miesiace" | "zastanowie" | "">("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -50,12 +51,13 @@ export const RegistrationForm = ({ prefill, isOpen, onClose }: Props) => {
           email,
           telefon: telefon.startsWith("+48") ? telefon : `+48${telefon}`,
           miasto,
-          typ: typ === "firma" ? "Dla zespołu / firmy" : "Dla siebie",
+          czy_firma: typ === "firma" ? "TAK" : "NIE",
           forma,
           liczba_osob: liczbaOsob,
           nazwa_firmy: nazwaFirmy,
           wojewodztwo,
           powiat,
+          kiedy: kiedy === "szybko" ? "Jak najszybciej" : kiedy === "3miesiace" ? "Za 3 miesiące" : "Zastanowię się",
         }),
       });
     } catch {}
@@ -93,15 +95,33 @@ export const RegistrationForm = ({ prefill, isOpen, onClose }: Props) => {
             <input type="text" required placeholder="Miasto *" value={miasto} onChange={(e) => setMiasto(e.target.value)} className={inputClass} />
           </div>
 
-          <div className="flex gap-4">
-            <label className={`flex-1 text-center py-3 rounded-lg cursor-pointer border transition-all font-bold text-sm ${typ === "firma" ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-muted-foreground/50"}`}>
-              <input type="radio" name="typ" className="sr-only" checked={typ === "firma"} onChange={() => setTyp("firma")} />
-              Dla zespołu / firmy
-            </label>
-            <label className={`flex-1 text-center py-3 rounded-lg cursor-pointer border transition-all font-bold text-sm ${typ === "indywidualnie" ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-muted-foreground/50"}`}>
-              <input type="radio" name="typ" className="sr-only" checked={typ === "indywidualnie"} onChange={() => setTyp("indywidualnie")} />
-              Dla siebie
-            </label>
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-foreground">Czy masz firmę?</p>
+            <div className="flex gap-4">
+              <label className={`flex-1 text-center py-3 rounded-lg cursor-pointer border transition-all font-bold text-sm ${typ === "firma" ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-muted-foreground/50"}`}>
+                <input type="radio" name="typ" className="sr-only" checked={typ === "firma"} onChange={() => setTyp("firma")} />
+                TAK
+              </label>
+              <label className={`flex-1 text-center py-3 rounded-lg cursor-pointer border transition-all font-bold text-sm ${typ === "indywidualnie" ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-muted-foreground/50"}`}>
+                <input type="radio" name="typ" className="sr-only" checked={typ === "indywidualnie"} onChange={() => setTyp("indywidualnie")} />
+                NIE
+              </label>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-foreground">Kiedy chcesz pójść na szkolenie?</p>
+            <div className="flex gap-3">
+              {(["szybko", "3miesiace", "zastanowie"] as const).map((val, i) => {
+                const labels = ["Jak najszybciej", "Za 3 miesiące", "Zastanowię się"];
+                return (
+                  <label key={val} className={`flex-1 text-center py-3 rounded-lg cursor-pointer border transition-all font-bold text-sm ${kiedy === val ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-muted-foreground/50"}`}>
+                    <input type="radio" name="kiedy" className="sr-only" checked={kiedy === val} onChange={() => setKiedy(val)} />
+                    {labels[i]}
+                  </label>
+                );
+              })}
+            </div>
           </div>
 
           {typ === "firma" && (
